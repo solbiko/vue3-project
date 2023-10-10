@@ -1,14 +1,23 @@
 <template>
-  <div class="name"> {{ greet }} </div>
-  <div class="name"> {{ name }} </div>
-    <div class="name"> {{ obj.name }} </div>
+  <div v-bind:class="nameClass"> {{ greet }} </div> <!-- class 데이터 바인딩 -->
+  <div :class="nameClass"> name : {{ name }} </div> <!-- v-bind 생략 -->
+  <div class="name"> obj.name : {{ obj.name }} </div> <!-- obj 데이터 바인딩 -->
 
-  <button 
-    class="btn btn-primary"
-    v-on:click="updateName2"
-  >
-    click
-  </button>
+  <div> 
+    <input v-bind:type="type" v-bind:value="name"> <!-- type, value 바인딩 -->
+    <button class="btn btn-primary" @click="updateName" > click </button> <!-- v-on: 생략, @로 대체 -->
+  </div>
+
+
+  <div> <!-- 양방향 바인딩 --> 
+    <input type="text" :value="name" @input="updateInputName">
+  </div>
+
+    <div>
+    <input type="text" v-model="name">
+    <button class="btn btn-primary" @click="onSubmit" > click </button>
+  </div>
+
 
 </template>
 
@@ -19,6 +28,9 @@ export default {
 
     // let name = "Karla";
     const name = ref("Karla");
+    const type = ref("number");
+    const nameClass = ref('name');
+    
     const obj = reactive({
       id:1,
       name:"test"
@@ -32,7 +44,8 @@ export default {
 
     const updateName = () => {
       name.value = "Solbi";
-      console.log(name);
+      type.value = "text";
+      console.log(name.value);
     };
 
     const updateName2 = () => {
@@ -41,13 +54,26 @@ export default {
 
     };
 
+    const updateInputName = (e) => {
+      name.value = e.target.value
+    }
+
+    const onSubmit = () => {
+      console.log(name.value)
+    };
+
+
     return {
       name,
+      type,
+      nameClass,
       obj,
       // greeting,
       greet,
       updateName,
-      updateName2
+      updateName2,
+      onSubmit,
+      updateInputName,
     };
 
 
