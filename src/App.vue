@@ -23,6 +23,34 @@
       @toggle-todo="toggleTodo"
       @delete-todo="deleteTodo"
     />
+    <hr>
+    <nav aria-label="Page navigation example">
+      <ul class="pagination">
+        <li 
+          :class="currentPage !== 1 ? '': 'disabled'"
+          class="page-item"
+        >
+          <a @click="getTodos(currentPage-1)" class="page-link" href="#">Previous</a>
+        </li>
+
+        <li 
+          v-for="page in numberOfPages"
+          :key="page"
+          :class="currentPage === page ? 'active' : ''"
+          class="page-item"
+          >
+            <a @click="getTodos(page)" class="page-link" href="#">{{page}}</a>
+        </li>
+
+        <li 
+          :class="currentPage !== numberOfPages ? '': 'disabled'"
+          class="page-item"
+        >
+          <a @click="getTodos(currentPage+1)" class="page-link" href="#">Next</a>
+        </li>
+      </ul>
+  </nav>
+
   </div>
 
 </template>
@@ -41,16 +69,28 @@ export default {
   setup(){
     const todos = ref([]);
     const error = ref('');
+    
+    // 페이지네이션
+    const numberOfTodos = ref(0);
+    const limit = 5;
+    const currentPage = ref(1);
+    const numberOfPages = computed(() => {
+      return Math.ceil(numberOfTodos.value/limit)
+    });
 
     const todoStyle = {
       textDecoration : 'line-through',
       color : 'gray' 
     }
 
-    const getTodos = async () => {
+    const getTodos = async (page = currentPage.value) => {
+      currentPage.value = page;
       try {
-        const res = await axios.get('http://localhost:3000/todos');
+        const res = await axios.get(
+          `http://localhost:3000/todos?_page=${page}&_limit=${limit}`
+        );
         todos.value = res.data;
+        numberOfTodos.value = res.headers['x-total-count'];
       } catch (err) {
         error.value = "Something went wrong.";
       }
@@ -131,6 +171,9 @@ export default {
       searchText,
       filteredTodos,
       
+      currentPage,
+      numberOfPages,
+      getTodos,
     };
 
   }
