@@ -3,16 +3,11 @@
     {
       "id": 1,
       "subject": "TEST",
-      "completed": false
-    },
-    {
-      "subject": "test1111",
-      "completed": false,
-      "id": 2
+      "completed": true
     },
     {
       "subject": "111111",
-      "completed": false,
+      "completed": true,
       "id": 3
     }
   ]
