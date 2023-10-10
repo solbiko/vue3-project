@@ -45,35 +45,33 @@
 
 <script>
 export default {
-    // props: ['todolist']
-    props: {
-        todolist : {
-            type: Array, // Array 타입으로만 받음
-            // String, Number, Boolean, Array, Object, Function, Promise
-            required: true
-        }
-    },
-    emits: ['toggle-todo', 'delete-todo'], 
+  // props: ['todolist']
+  props: {
+      todolist : {
+          type: Array, // Array 타입으로만 받음
+          // String, Number, Boolean, Array, Object, Function, Promise
+          required: true
+      }
+  },
+  emits: ['toggle-todo', 'delete-todo'], 
 
-    // setup(props, context){
-    setup(props, {emit}){ // context대신 {emit}으로 바로 사용
-        const toggleTodo = (index) => {
-            // context.emit('toggle-todo', index);
-            emit('toggle-todo', index);
-        };
+  // setup(props, context){
+  setup(props, {emit}){ // context대신 {emit}으로 바로 사용
+    const toggleTodo = (index) => {
+        // context.emit('toggle-todo', index);
+        emit('toggle-todo', index);
+    };
 
-         const deleteTodo = (index) => {
-            // context.emit('delete-todo', index);
-            emit('delete-todo', index);
+      const deleteTodo = (index) => {
+        // context.emit('delete-todo', index);
+        emit('delete-todo', index);
+    };
 
-        };
-
-
-        return {
-            toggleTodo,
-            deleteTodo,
-        }
+    return {
+        toggleTodo,
+        deleteTodo,
     }
+  }
 
 }
 </script>

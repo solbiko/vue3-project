@@ -1,25 +1,23 @@
 <template>
-
-
   <div class="container">
     <h2 class="title"> To-Do List </h2>
-
     <input 
       type="text" 
       placeholder="search"
       class="form-control"
       v-model="searchText"
+      @keyup.enter="searchTodo"
     >
     <hr>
 
     <TodoSimpleForm @add-todo="addTodo" />
     <div style="color:red">{{error}}</div>
 
-    <div v-if="!filteredTodos.length">
+    <div v-if="!todos.length">
       There is nothing to display.
     </div>
     <TodoList 
-      :todolist="filteredTodos" 
+      :todolist="todos" 
       @toggle-todo="toggleTodo"
       @delete-todo="deleteTodo"
     />
@@ -56,7 +54,7 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
+import { ref, computed, watchEffect, watch, reactive } from 'vue';
 import TodoSimpleForm from './components/TodoSimpleForm.vue';
 import TodoList from './components/TodoList.vue';
 import axios from 'axios';
@@ -78,16 +76,40 @@ export default {
       return Math.ceil(numberOfTodos.value/limit)
     });
 
-    const todoStyle = {
-      textDecoration : 'line-through',
-      color : 'gray' 
-    }
+    const searchText = ref('');
+
+    // const a = reactive({
+    //   b:1,
+    //   c:3
+    // })
+
+    // watchEffect(() => {
+      // console.log(currentPage.value);
+      // console.log(numberOfTodos.value);
+      // console.log(numberOfPages.value);
+      // console.log(a.b)
+    // });
+    // a.b=2
+
+    // watch([currentPage, numberOfTodos], (currentPage, prev) => {
+    //   console.log(currentPage, prev);
+    // });  
+
+    // watch(() => [a.b, a.c], (current,prev)=>{
+    //   console.log(current, prev)
+    // });
+    // a.b=3
+
+    // const todoStyle = {
+    //   textDecoration : 'line-through',
+    //   color : 'gray' 
+    // }
 
     const getTodos = async (page = currentPage.value) => {
       currentPage.value = page;
       try {
         const res = await axios.get(
-          `http://localhost:3000/todos?_page=${page}&_limit=${limit}`
+          `http://localhost:3000/todos?_sort=id&_order=desc&subject_like=${searchText.value}&_page=${page}&_limit=${limit}`
         );
         todos.value = res.data;
         numberOfTodos.value = res.headers['x-total-count'];
@@ -106,7 +128,8 @@ export default {
           subject : todo.subject,
           completed: todo.completed,
         });
-        todos.value.push(res.data);
+        // todos.value.push(res.data);
+        getTodos(1);
       } catch (err){
         error.value = "Something went wrong.";
       }
@@ -128,7 +151,8 @@ export default {
       const id = todos.value[index].id;
       try {
         await axios.delete('http://localhost:3000/todos/'+id);
-        todos.value.splice(index, 1);
+        // todos.value.splice(index, 1);
+        getTodos(1);
       } catch (err){
         error.value = "Something went wrong.";
       }
@@ -148,32 +172,41 @@ export default {
       }
     };
 
+    // 검색
+    // const filteredTodos = computed(() => {
+    //   if(searchText.value){
+    //     return todos.value.filter(todo => {
+    //       return todo.subject.includes(searchText.value);
+    //     })
+    //   }
 
-    const searchText = ref('');
-    const filteredTodos = computed(() => {
-      if(searchText.value){
-        return todos.value.filter(todo => {
-          return todo.subject.includes(searchText.value);
-        })
-      }
+    //   return todos.value;
+    // });
 
-      return todos.value;
+    let timeout = null;
+    const searchTodo = () => { // enter 입력 시 바로 조회
+      clearTimeout(timeout);
+      getTodos(1);
+    };
+    watch(searchText, () =>{ 
+      clearTimeout(timeout);  // 2초 되기전에 또 요청들어오면 앞요청 취소
+      timeout = setTimeout(() => { // 문자열 바뀔때마다 검색하므로 2초 delay 줌
+            getTodos(1); // 검색 1페이지 조회
+      }, 2000);
     });
-   
 
     return {
       todos,
       error,
-      todoStyle,
       deleteTodo,
       addTodo,
       toggleTodo,
       searchText,
-      filteredTodos,
-      
+      // filteredTodos,
       currentPage,
       numberOfPages,
       getTodos,
+      searchTodo,
     };
 
   }
