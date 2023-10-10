@@ -1,8 +1,4 @@
 <template>
-    
-     <div v-if="!todolist.length">
-        추가된 Todo가 없습니다.
-    </div>
 
      <div 
       v-for="(todo, index) in todolist" 

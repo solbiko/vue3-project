@@ -1,4 +1,16 @@
 <template>
+  <h3>{{count}}</h3>
+  <h3>{{doubleCountComputed}}</h3>
+  <h3>{{doubleCountComputed}}</h3>
+  <h3>{{doubleCountMethod()}}</h3>
+  <h3>{{doubleCountMethod()}}</h3>
+
+  <button @click="count++"> add one </button>
+
+
+
+
+
   <div v-if="toggle">true</div> <!-- 런타임동안 자주 바뀌지 않을 때 사용, 토글 하는데 비용 큼 -->
   <div v-else>false</div>
    <div v-show="toggle">true</div> <!-- 토글 자주할 때 사용, 초기 랜더링 비용 큼 --> 
@@ -27,7 +39,7 @@
 </template>
 
 <script>
-import { ref,reactive } from 'vue';
+import { ref, reactive, computed } from 'vue';
 export default {
   setup(){
 
@@ -74,6 +86,21 @@ export default {
       toggle.value = !toggle.value;
     }
 
+
+ const count = ref(1);
+    const doubleCountComputed = computed(() =>{ 
+      // 인자로 받아와서 연산 불가능, reactive state 변경될때만 값 변수 저장
+      // 값을 캐싱함, 한번 하면 저장하고 있음
+      console.log("computed")      
+      return count.value*2;
+    });
+
+    const doubleCountMethod =() => {  // 인자로 받아와서 연산 가능
+      console.log("method")      
+      return count.value*2;
+    };
+
+
     return {
       name,
       type,
@@ -87,6 +114,9 @@ export default {
       updateInputName,
       toggle,
       onToggle,
+      count,
+      doubleCountComputed,
+      doubleCountMethod,
     };
 
 

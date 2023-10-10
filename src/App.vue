@@ -1,9 +1,23 @@
 <template>
+
+
   <div class="container">
     <h2 class="title"> To-Do List </h2>
+
+    <input 
+      type="text" 
+      placeholder="search"
+      class="form-control"
+      v-model="searchText"
+    >
+    <hr>
+
     <TodoSimpleForm @add-todo="addTodo" />
+    <div v-if="!filteredTodos.length">
+      There is nothing to display.
+    </div>
     <TodoList 
-      :todolist="todos" 
+      :todolist="filteredTodos" 
       @toggle-todo="toggleTodo"
       @delete-todo="deleteTodo"
     />
@@ -12,7 +26,7 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import TodoSimpleForm from './components/TodoSimpleForm.vue';
 import TodoList from './components/TodoList.vue';
 
@@ -41,12 +55,27 @@ export default {
       todos.value[index].completed = !todos.value[index].completed
     };
 
+
+    const searchText = ref('');
+    const filteredTodos = computed(() => {
+      if(searchText.value){
+        return todos.value.filter(todo => {
+          return todo.subject.includes(searchText.value);
+        })
+      }
+
+      return todos.value;
+    });
+   
+
     return {
       todos,
       todoStyle,
       deleteTodo,
       addTodo,
       toggleTodo,
+      searchText,
+      filteredTodos,
     };
 
   }
