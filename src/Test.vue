@@ -1,5 +1,10 @@
 <template>
-  
+  <div v-if="toggle">true</div> <!-- 런타임동안 자주 바뀌지 않을 때 사용, 토글 하는데 비용 큼 -->
+  <div v-else>false</div>
+   <div v-show="toggle">true</div> <!-- 토글 자주할 때 사용, 초기 랜더링 비용 큼 --> 
+  <div v-show="!toggle">false</div>
+  <button @click="onToggle"> Toggle </button>
+
   <div v-bind:class="nameClass"> {{ greet }} </div> <!-- class 데이터 바인딩 -->
   <div :class="nameClass"> name : {{ name }} </div> <!-- v-bind 생략 -->
   <div class="name"> obj.name : {{ obj.name }} </div> <!-- obj 데이터 바인딩 -->
@@ -36,6 +41,9 @@ export default {
       name:"test"
     });
 
+    const toggle = ref(false);
+
+
     const greeting = (name) =>{
       return 'Hello, ' + name.value;
     };
@@ -62,6 +70,9 @@ export default {
       console.log(name.value)
     };
 
+   const onToggle = () =>{
+      toggle.value = !toggle.value;
+    }
 
     return {
       name,
@@ -74,6 +85,8 @@ export default {
       updateName2,
       onSubmit,
       updateInputName,
+      toggle,
+      onToggle,
     };
 
 

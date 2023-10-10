@@ -1,10 +1,4 @@
 <template>
-  <div v-if="toggle">true</div> <!-- 런타임동안 자주 바뀌지 않을 때 사용, 토글 하는데 비용 큼 -->
-  <div v-else>false</div>
-   <div v-show="toggle">true</div> <!-- 토글 자주할 때 사용, 초기 랜더링 비용 큼 --> 
-  <div v-show="!toggle">false</div>
-  <button @click="onToggle"> Toggle </button>
-
   <div class="container">
     <h2 class="title"> To-Do List </h2>
 
@@ -39,7 +33,6 @@
 import { ref } from 'vue';
 export default {
   setup(){
-    const toggle = ref(false);
     const todo = ref("");
     const todos = ref([
       {id:1, subject: "휴대폰 사기"},
@@ -64,16 +57,10 @@ export default {
       
     };
 
-    const onToggle = () =>{
-      toggle.value = !toggle.value;
-    }
-
     return {
       todo,
       todos,
-      toggle,
       onSubmit,
-      onToggle,
       hasError,
     };
 
@@ -82,9 +69,6 @@ export default {
 </script>
 
 <style>
-.center {
-  text-align: center;
-}
 .title {
   color : pink;
   font-family: Avenir, Helvetica, Arial, sans-serif;
