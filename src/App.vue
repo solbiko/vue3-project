@@ -1,92 +1,94 @@
 <template>
-  <div v-bind:class="nameClass"> {{ greet }} </div> <!-- class 데이터 바인딩 -->
-  <div :class="nameClass"> name : {{ name }} </div> <!-- v-bind 생략 -->
-  <div class="name"> obj.name : {{ obj.name }} </div> <!-- obj 데이터 바인딩 -->
+  <div v-if="toggle">true</div> <!-- 런타임동안 자주 바뀌지 않을 때 사용, 토글 하는데 비용 큼 -->
+  <div v-else>false</div>
+   <div v-show="toggle">true</div> <!-- 토글 자주할 때 사용, 초기 랜더링 비용 큼 --> 
+  <div v-show="!toggle">false</div>
+  <button @click="onToggle"> Toggle </button>
 
-  <div> 
-    <input v-bind:type="type" v-bind:value="name"> <!-- type, value 바인딩 -->
-    <button class="btn btn-primary" @click="updateName" > click </button> <!-- v-on: 생략, @로 대체 -->
+  <div class="container">
+    <h2 class="title"> To-Do List </h2>
+
+    <form @submit.prevent="onSubmit">
+      <div class="d-flex">
+        <div class="flex-grow-1 mr-2">
+          <input 
+            type="text" 
+            v-model="todo" 
+            placeholder="type new todo"
+            class="form-control"
+          >
+          </div>
+        <div>
+          <button class="btn btn-primary" type="sumbit"> Add </button>
+        </div>
+      </div>
+      <div v-show="hasError" style="color:red;"> This field cannot be empty. </div>
+    </form>
+
+    <div v-for="todo in todos" :key="todo.id" class="card mt-2">
+      <div class="card-body p-2">
+            {{todo.subject}}      
+      </div>
+    </div>
+
   </div>
-
-
-  <div> <!-- 양방향 바인딩 --> 
-    <input type="text" :value="name" @input="updateInputName">
-  </div>
-
-    <div>
-    <input type="text" v-model="name">
-    <button class="btn btn-primary" @click="onSubmit" > click </button>
-  </div>
-
 
 </template>
 
 <script>
-import { ref,reactive } from 'vue';
+import { ref } from 'vue';
 export default {
   setup(){
+    const toggle = ref(false);
+    const todo = ref("");
+    const todos = ref([
+      {id:1, subject: "휴대폰 사기"},
+      {id:2, subject: "장보기"},
+    ]);
+    const hasError = ref(false);
 
-    // let name = "Karla";
-    const name = ref("Karla");
-    const type = ref("number");
-    const nameClass = ref('name');
-    
-    const obj = reactive({
-      id:1,
-      name:"test"
-    });
-
-    const greeting = (name) =>{
-      return 'Hello, ' + name.value;
-    };
-
-    const greet = greeting(name);
-
-    const updateName = () => {
-      name.value = "Solbi";
-      type.value = "text";
-      console.log(name.value);
-    };
-
-    const updateName2 = () => {
-      obj.name = "Solbi";
-      console.log(obj.name);
-
-    };
-
-    const updateInputName = (e) => {
-      name.value = e.target.value
-    }
 
     const onSubmit = () => {
-      console.log(name.value)
+      // e.preventDefault();
+      if(todo.value ===''){
+        hasError.value = true;
+      }
+      else {
+        todos.value.push({
+          id: Date.now(),
+          subject : todo.value
+        });
+        todo.value = '';
+        hasError.value = false;
+      }
+      
     };
 
+    const onToggle = () =>{
+      toggle.value = !toggle.value;
+    }
 
     return {
-      name,
-      type,
-      nameClass,
-      obj,
-      // greeting,
-      greet,
-      updateName,
-      updateName2,
+      todo,
+      todos,
+      toggle,
       onSubmit,
-      updateInputName,
+      onToggle,
+      hasError,
     };
-
 
   }
 }
 </script>
 
 <style>
-.name {
+.center {
+  text-align: center;
+}
+.title {
   color : pink;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
-  text-align: center;
   margin-top: 60px;
   font-size: 30px;
 }
