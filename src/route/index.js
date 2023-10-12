@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from "../pages/index.vue";
 import Todos from "../pages/todos/index.vue";
+import Todo from "../pages/todos/_id.vue";
+
 
 const router = createRouter ({
     history : createWebHistory(),
@@ -15,13 +17,16 @@ const router = createRouter ({
             name : "Todos",
             component : Todos
         },
-
+        {
+            path : "/todos/:id",
+            name : "Todo",
+            component : Todo
+        },
     ]
 
 });
 
 // 1. /home
 // 2. /todos
-// 3. /todos/create 생성 페이지
-// 4. /todos/:id 상세 페이지
+// 3. /todos/:id 상세 페이지
 export default router;
