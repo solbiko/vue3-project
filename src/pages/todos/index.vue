@@ -1,36 +1,41 @@
 <template>
-  <div class="container">
-    <h2 class="title"> To-Do List </h2>
-    <input 
-      type="text" 
-      placeholder="search"
-      class="form-control"
-      v-model="searchText"
-      @keyup.enter="searchTodo"
-    >
-    <hr>
-
-    <TodoSimpleForm @add-todo="addTodo" />
-
-    <div style="color:red">{{error}}</div>
-    <div v-if="!todos.length"> There is nothing to display. </div>
-
-    <TodoList
-      :todolist="todos" 
-      @toggle-todo="toggleTodo"
-      @delete-todo="deleteTodo"
-    />
-    <hr>
-
-    
-    <pagenation
-    :numberOfTodos="numberOfTodos"
-    :limit="limit" 
-    :currentPage="currentPage"
-    @get-todo="getTodos"
-    >
-    </pagenation>
+  <div class="d-flex justify-content-between mb-1"> 
+  <h2 class="title"> To-Do List </h2>
+  <button 
+    @click="moveToCreatePage"
+    class="btn btn-primary"
+  >Create Todo</button>
   </div>
+
+  <input 
+    type="text" 
+    placeholder="search"
+    class="form-control"
+    v-model="searchText"
+    @keyup.enter="searchTodo"
+  >
+  <hr>
+
+  <!-- <TodoSimpleForm @add-todo="addTodo" /> -->
+
+  <div style="color:red">{{error}}</div>
+  <div v-if="!todos.length"> There is nothing to display. </div>
+
+  <TodoList
+    :todolist="todos" 
+    @toggle-todo="toggleTodo"
+    @delete-todo="deleteTodo"
+  />
+  <hr>
+
+  
+  <pagenation
+  :numberOfTodos="numberOfTodos"
+  :limit="limit" 
+  :currentPage="currentPage"
+  @get-todo="getTodos"
+  >
+  </pagenation>
 
   <Toast
       v-if="showToast" 
@@ -41,22 +46,26 @@
 
 <script>
 import { ref, computed, watchEffect, watch, reactive } from 'vue';
-import TodoSimpleForm from '@/components/TodoSimpleForm.vue';
+// import TodoSimpleForm from '@/components/TodoSimpleForm.vue';
 import TodoList from '@/components/TodoList.vue';
 import Pagenation from '@/components/Pagination.vue';
 import Toast from '@/components/Toast.vue';
 import { useToast } from '@/composables/toast';
+import { useRouter } from 'vue-router';
 
 import axios from 'axios';
 
 export default {
   components: {
-    TodoSimpleForm,
+    // TodoSimpleForm,
     TodoList,
     Pagenation,
     Toast,
   },
   setup(){
+
+    const router = useRouter();
+
     const todos = ref([]);
     const error = ref('');
     
@@ -131,7 +140,7 @@ export default {
 
     // todo 체크박스 체크
     const toggleTodo = async (index, checked) => {
-    
+      console.log(checked)
       error.value = '';
       const id = todos.value[index].id;
       try {
@@ -169,6 +178,12 @@ export default {
       }, 2000);
     });
 
+    const moveToCreatePage = () => {
+      router.push({
+        name: 'TodoCreate',
+      })
+    }
+      
     return {
       todos,
       error,
@@ -185,6 +200,7 @@ export default {
       showToast,
       toastMessage,
       toastType,
+      moveToCreatePage,
     };
 
   }
@@ -195,7 +211,6 @@ export default {
 .title {
   color : pink;
   font-family: Avenir, Helvetica, Arial, sans-serif;
-  margin-top: 60px;
 }
 
 .todo_comp {

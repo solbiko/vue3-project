@@ -10,10 +10,10 @@
         class="card-body p-2 d-flex align-items-center"
         style="cursor:pointer;"
       >
-        <div class="form-check flex-grow-1">
+        <div class=" flex-grow-1">
             <input
               type="checkbox" 
-              class="form-check-input"
+              class="ml-2 mr-2"
               :checked="todo.completed"
               @change="toggleTodo(index, $event)"
               @click.stop
@@ -24,7 +24,7 @@
              props는 부모-> 자녀 단방향이고, 
              v-model은 양방향 바인딩이므로 수정
             --------------------------->
-            <label 
+            <span 
              class="form-check-label"
              :class="{todo_comp: todo.completed}"
             >
@@ -33,7 +33,7 @@
             :style="todo.completed?  todoStyle : {}"
             ----------------------------->
               {{todo.subject}}
-            </label>            
+            </span>            
         </div>
         <div> 
           <button 
@@ -76,7 +76,8 @@ export default {
     const router = useRouter();
     const toggleTodo = (index, event) => {
         // context.emit('toggle-todo', index);
-        emit('toggle-todo', index, event);
+        console.log(event);
+        emit('toggle-todo', index, event.target.checked);
     };
 
     const deleteTodo = (index) => {
