@@ -32,6 +32,11 @@
     </pagenation>
   </div>
 
+  <Toast
+      v-if="showToast" 
+      :message="toastMessage"
+      :type="toastType"
+  />
 </template>
 
 <script>
@@ -39,12 +44,17 @@ import { ref, computed, watchEffect, watch, reactive } from 'vue';
 import TodoSimpleForm from '@/components/TodoSimpleForm.vue';
 import TodoList from '@/components/TodoList.vue';
 import Pagenation from '@/components/Pagination.vue';
+import Toast from '@/components/Toast.vue';
+import { useToast } from '@/composables/toast';
+
 import axios from 'axios';
+
 export default {
   components: {
     TodoSimpleForm,
     TodoList,
     Pagenation,
+    Toast,
   },
   setup(){
     const todos = ref([]);
@@ -55,7 +65,11 @@ export default {
     const limit = 5;
     const currentPage = ref(1);
  
+    // 검색
     const searchText = ref('');
+
+    // 토스트메시지
+    const { toastMessage, toastType, showToast, triggerToast} = useToast();
 
    
     const getTodos = async (page = currentPage.value) => {
@@ -67,7 +81,8 @@ export default {
         todos.value = res.data;
         numberOfTodos.value = res.headers['x-total-count'];
       } catch (err) {
-        error.value = "Something went wrong.";
+        // error.value = "Something went wrong.";
+        triggerToast('Something went wrong.', 'danger');
       }
     };
     getTodos();
@@ -84,7 +99,8 @@ export default {
         // todos.value.push(res.data);
         getTodos(1);
       } catch (err){
-        error.value = "Something went wrong.";
+        // error.value = "Something went wrong.";
+        triggerToast('Something went wrong.', 'danger');
       }
 
       // axios.post('http://localhost:3000/todos', {
@@ -107,7 +123,9 @@ export default {
         // todos.value.splice(index, 1);
         getTodos(1);
       } catch (err){
-        error.value = "Something went wrong.";
+        // error.value = "Something went wrong.";
+        triggerToast('Something went wrong.', 'danger');
+
       }
     };
 
@@ -122,7 +140,9 @@ export default {
         });
         todos.value[index].completed = checked;
       } catch (err){
-        error.value = "Something went wrong.";
+        // error.value = "Something went wrong.";
+        triggerToast('Something went wrong.', 'danger');
+
       }
     };
 
@@ -162,6 +182,9 @@ export default {
       limit,
       getTodos,
       searchTodo, 
+      showToast,
+      toastMessage,
+      toastType,
     };
 
   }
