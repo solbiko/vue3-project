@@ -124,9 +124,8 @@ export default {
 
 
     // todo 삭제
-    const deleteTodo = async (index) => {
-      error.value = '';
-      const id = todos.value[index].id;
+    const deleteTodo = async (id) => {
+      // error.value = '';
       try {
         await axios.delete('http://localhost:3000/todos/'+id);
         // todos.value.splice(index, 1);
