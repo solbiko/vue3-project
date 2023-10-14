@@ -8,13 +8,16 @@
     >
         <div class="row mb-2">
             <div :class="editing ? 'col-6' : 'col-12'">
-                <div class="form-group"> 
-                    <label> Subject </label>
-                    <input type="text" class="form-control" v-model="todo.subject">
-                    <div v-if="subjectError" class="text-red">
-                        {{subjectError}}
-                    </div> 
-                </div>
+                <Input 
+                    label="Subject"
+                    v-model:subject="todo.subject"
+                    :error="subjectError"
+                />
+                <!--------------------------------------
+                    :subject="todo.subject"
+                    @update-subject="updateTodoSubject"
+                    컴포넌트에 v-model 사용하면서 변경 
+                --------------------------------------->
 
             </div>
             <div v-if="editing" class="col-6">
@@ -66,9 +69,12 @@ import axios from 'axios';
 import _ from 'lodash';
 import Toast from '@/components/Toast.vue';
 import { useToast } from '@/composables/toast';
+import Input from '@/components/SubjectInput.vue';
+
 export default {
     components: {
-        Toast
+        Toast,
+        Input
     },
     props: {
         editing: {
@@ -93,6 +99,12 @@ export default {
         // 토스트 메시지
         const { toastMessage, toastType, showToast, triggerToast} = useToast();
         
+        // 컴포넌트에 v-model 사용하면서 삭제
+        // const updateTodoSubject= (newValue) => {
+        //     todo.value.subject = newValue;
+        // }
+
+
         // 투두 정보 가져오기
         const getTodos = async () => {
             loading.value = true;
@@ -176,9 +188,6 @@ export default {
 <style scoped>
 /* scoped 사용시 전역이 아닌 해당 컴포넌트에서만 적용됨 */
 
-.text-red {
-    color: red;
-}
 
 /* .fade-enter-active, 
 .fade-leave-active {
