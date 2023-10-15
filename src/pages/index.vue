@@ -1,6 +1,5 @@
 <template>
   <h2>Home Page</h2>
-
   <form  @submit.prevent="onSubmit">
     <Input label="Email address" type="email" v-model="email" />
     <Input label="Password" type="password" v-model="password" />
@@ -13,11 +12,16 @@
       class="btn btn-primary"
       >Submit</button>
   </form>
+  <hr>
+  {{ count }}
+  <button @click="count++"> add </button>
+
 </template>
 
 <script>
 import { ref } from 'vue';
 import Input from '@/components/Input.vue';
+import { useCount } from '@/composables/count';
 
 export default {
   components: {
@@ -25,6 +29,8 @@ export default {
   },
 
   setup() {
+    const { count } = useCount();
+
     const email = ref('');
     const password = ref('');
 
@@ -36,7 +42,8 @@ export default {
     return {
       email,
       password,
-      onSubmit
+      onSubmit,
+      count
     }
   }
 

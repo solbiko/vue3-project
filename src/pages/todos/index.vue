@@ -53,7 +53,7 @@ import Toast from '@/components/Toast.vue';
 import { useToast } from '@/composables/toast';
 import { useRouter } from 'vue-router';
 
-import axios from 'axios';
+import axios from '@/axios';
 
 export default {
   components: {
@@ -85,7 +85,7 @@ export default {
       currentPage.value = page;
       try {
         const res = await axios.get(
-          `http://localhost:3000/todos?_sort=id&_order=desc&subject_like=${searchText.value}&_page=${page}&_limit=${limit}`
+          `todos?_sort=id&_order=desc&subject_like=${searchText.value}&_page=${page}&_limit=${limit}`
         );
         todos.value = res.data;
         numberOfTodos.value = res.headers['x-total-count'];
@@ -101,7 +101,7 @@ export default {
     const addTodo = async (todo) => {
       error.value = '';
       try {
-        const res = await axios.post('http://localhost:3000/todos', {
+        const res = await axios.post('todos', {
           subject : todo.subject,
           completed: todo.completed,
         });
@@ -111,15 +111,6 @@ export default {
         // error.value = "Something went wrong.";
         triggerToast('Something went wrong.', 'danger');
       }
-
-      // axios.post('http://localhost:3000/todos', {
-      //   subject : todo.subject,
-      //   completed: todo.completed,
-      // }).then(res => {
-      //   todos.value.push(res.data);
-      // }).catch(err => {
-      //   error.value = "Something went wrong.";
-      // });
     };
 
 
@@ -127,7 +118,7 @@ export default {
     const deleteTodo = async (id) => {
       // error.value = '';
       try {
-        await axios.delete('http://localhost:3000/todos/'+id);
+        await axios.delete('todos/'+id);
         // todos.value.splice(index, 1);
         getTodos(1);
       } catch (err){
@@ -143,7 +134,7 @@ export default {
       error.value = '';
       const id = todos.value[index].id;
       try {
-        await axios.patch('http://localhost:3000/todos/'+id, {
+        await axios.patch('todos/'+id, {
           completed : checked
         });
         todos.value[index].completed = checked;
