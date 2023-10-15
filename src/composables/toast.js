@@ -11,7 +11,7 @@
     // const toastType = computed(() => store.state.toast.toastType);
 
     const triggerToast = (msg, tp='success') => {
-        store.dispatch('toast/triggerToast',msg, tp);
+        store.dispatch('toast/triggerToast',{message: msg, type: tp});
     };
 
     // onUnmounted(() => {
