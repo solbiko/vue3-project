@@ -1,33 +1,29 @@
- import { ref, onUnmounted } from 'vue';
+ import { ref, computed, onUnmounted } from 'vue';
+ import { useStore } from 'vuex';
 
  export const useToast = () => {
-    // 토스트
-    const showToast = ref(false);
-    const toastMessage = ref('');
-    const toastType = ref('');
-    const timeout = ref(null);
+    
+    const store = useStore();
+    const toasts = computed(() => store.state.toast.toasts);
+
+    // const showToast = computed(() => store.state.toast.showToast);
+    // const toastMessage = computed(() => store.getters['toast/toastMessageWithSmile']);
+    // const toastType = computed(() => store.state.toast.toastType);
 
     const triggerToast = (msg, tp='success') => {
-        toastMessage.value = msg;
-        toastType.value = tp;
-        showToast.value = true;
-        timeout.value = setTimeout(() => {
-            showToast.value = false;
-            toastMessage.value = '';
-            toastType.value = '';
-        }, 1500);
+        store.dispatch('toast/triggerToast',msg, tp);
     };
 
-    onUnmounted(() => {
-        clearTimeout(timeout.value); 
-        // 페이지 떠나면 토스트 메시지 띄울 필요X
-    }); 
+    // onUnmounted(() => {
+    //     clearTimeout(timeout.value); 
+    //     // 페이지 떠나면 토스트 메시지 띄울 필요X
+    // }); 
     
     return {
-    toastMessage,
-    toastType,
-    showToast,
+    // toastMessage,
+    // toastType,
+    // showToast,
+    toasts,
     triggerToast,
     }
  }
-    

@@ -54,11 +54,6 @@
     </form>
 
     <transition name="fade">
-    <Toast
-        v-if="showToast" 
-        :message="toastMessage"
-        :type="toastType"
-    />
     </transition>
 </template>
 
@@ -71,9 +66,9 @@ import Toast from '@/components/Toast.vue';
 import { useToast } from '@/composables/toast';
 import Input from '@/components/SubjectInput.vue';
 
+
 export default {
     components: {
-        Toast,
         Input
     },
     props: {
@@ -83,6 +78,7 @@ export default {
         }
     },
     setup(props) {
+      
         const route = useRoute();
         const router = useRouter();
 
@@ -163,6 +159,11 @@ export default {
                 }
                 originTodo.value = {...res.data}; 
                 triggerToast('Successfully ' + (props.editing? 'Updated!':'Created!'));
+
+                if (!props.editing){
+                    router.push({name:'Todos'});
+                }
+
             } catch (err){
                 triggerToast('Something went wrong.', 'danger');
             }
@@ -185,40 +186,6 @@ export default {
 }
 </script>
 
-<style scoped>
-/* scoped 사용시 전역이 아닌 해당 컴포넌트에서만 적용됨 */
-
-
-/* .fade-enter-active, 
-.fade-leave-active {
-    transition: opacity 0.5s ease;
-}
-
-.fade-enter-from, 
-.fade-leave-to {
-    opacity: 0;
-}
-
-.fade-enter-to,
-.fade-leave-from {
-    opacity: 1;
-} */
-
-.fade-enter-active, 
-.fade-leave-active {
-    transition: all 0.5s ease;
-}
-
-.fade-enter-from, 
-.fade-leave-to {
-    /* opacity: 0; */
-    transform: translateX(30px);
-}
-
-.fade-enter-to,
-.fade-leave-from {
-    /* opacity: 1; */
-    transform: translateX(0px);
-}
+<style >
 
 </style>

@@ -37,11 +37,7 @@
   >
   </pagenation>
 
-  <Toast
-      v-if="showToast" 
-      :message="toastMessage"
-      :type="toastType"
-  />
+
 </template>
 
 <script>
@@ -60,7 +56,6 @@ export default {
     // TodoSimpleForm,
     TodoList,
     Pagenation,
-    Toast,
   },
   setup(){
 

@@ -20,14 +20,22 @@
   <div class="container">
     <router-view/>  
   </div>
+   
+  <Toast />
+
 </template>
 
 <script>
 import { ref, computed, watchEffect, watch, reactive } from 'vue';
 
+import Toast from '@/components/Toast.vue';
+
 export default {
-  
+  components:{
+    Toast,
+  } ,
   setup(){
+
     // const a = reactive({
     //   b:1,
     //   c:3
@@ -47,6 +55,7 @@ export default {
     //   textDecoration : 'line-through',
     //   color : 'gray' 
     // }
+
   }
 }
 </script>
